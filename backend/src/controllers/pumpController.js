@@ -1,118 +1,87 @@
+const asyncHandler = require("express-async-handler");
 const Pump = require("../models/Pump");
 
-// Create a new pump
-exports.createPump = async (req, res) => {
-  try {
-    const pump = await Pump.create(req.body);
+// ======================================
+// Create Pump
+// ======================================
+exports.createPump = asyncHandler(async (req, res) => {
+  const pump = await Pump.create(req.body);
 
-    res.status(201).json({
-      success: true,
-      message: "Pump created successfully",
-      data: pump,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  res.status(201).json({
+    success: true,
+    message: "Pump created successfully",
+    data: pump,
+  });
+});
+
+// ======================================
+// Get All Pumps
+// ======================================
+exports.getAllPumps = asyncHandler(async (req, res) => {
+  const pumps = await Pump.find().populate("assignedTank");
+
+  res.status(200).json({
+    success: true,
+    count: pumps.length,
+    data: pumps,
+  });
+});
+
+// ======================================
+// Get Pump By ID
+// ======================================
+exports.getPumpById = asyncHandler(async (req, res) => {
+  const pump = await Pump.findById(req.params.id).populate("assignedTank");
+
+  if (!pump) {
+    res.status(404);
+    throw new Error("Pump not found");
   }
-};
 
-// Get all pumps
-exports.getAllPumps = async (req, res) => {
-  try {
-    const pumps = await Pump.find();
+  res.status(200).json({
+    success: true,
+    data: pump,
+  });
+});
 
-    res.status(200).json({
-      success: true,
-      count: pumps.length,
-      data: pumps,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-
-// Get pump by ID
-exports.getPumpById = async (req, res) => {
-  try {
-    const pump = await Pump.findById(req.params.id);
-
-    if (!pump) {
-      return res.status(404).json({
-        success: false,
-        message: "Pump not found",
-      });
+// ======================================
+// Update Pump
+// ======================================
+exports.updatePump = asyncHandler(async (req, res) => {
+  const pump = await Pump.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
     }
+  );
 
-    res.status(200).json({
-      success: true,
-      data: pump,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  if (!pump) {
+    res.status(404);
+    throw new Error("Pump not found");
   }
-};
 
-// Update pump
-exports.updatePump = async (req, res) => {
-  try {
-    const pump = await Pump.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+  res.status(200).json({
+    success: true,
+    message: "Pump updated successfully",
+    data: pump,
+  });
+});
 
-    if (!pump) {
-      return res.status(404).json({
-        success: false,
-        message: "Pump not found",
-      });
-    }
+// ======================================
+// Delete Pump
+// ======================================
+exports.deletePump = asyncHandler(async (req, res) => {
+  const pump = await Pump.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({
-      success: true,
-      message: "Pump updated successfully",
-      data: pump,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  if (!pump) {
+    res.status(404);
+    throw new Error("Pump not found");
   }
-};
 
-// Delete a pump
-exports.deletePump = async (req, res) => {
-  try {
-    const pump = await Pump.findByIdAndDelete(req.params.id);
-
-    if (!pump) {
-      return res.status(404).json({
-        success: false,
-        message: "Pump not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Pump deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: "Pump deleted successfully",
+  });
+});

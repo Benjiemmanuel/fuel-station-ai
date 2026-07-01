@@ -9,10 +9,54 @@ const {
   deletePump,
 } = require("../controllers/pumpController");
 
-router.post("/", createPump);
-router.get("/", getAllPumps);
-router.get("/:id", getPumpById);
-router.put("/:id", updatePump);
-router.delete("/:id", deletePump);
+const { protect } = require("../middleware/authMiddleware");
+const { authorizeRoles } = require("../middleware/roleMiddleware");
+
+const {
+  pumpValidation,
+  validate,
+} = require("../validators/pumpValidator");
+
+// Create Pump
+router.post(
+  "/",
+  protect,
+  authorizeRoles("Admin"),
+  pumpValidation,
+  validate,
+  createPump
+);
+
+// Get all pumps
+router.get(
+  "/",
+  protect,
+  getAllPumps
+);
+
+// Get single pump
+router.get(
+  "/:id",
+  protect,
+  getPumpById
+);
+
+// Update pump
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("Admin"),
+  pumpValidation,
+  validate,
+  updatePump
+);
+
+// Delete pump
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("Admin"),
+  deletePump
+);
 
 module.exports = router;
