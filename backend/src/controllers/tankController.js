@@ -1,14 +1,14 @@
-const Pump = require("../models/Pump");
+const Tank = require("../models/Tank");
 
-// Create a new pump
-exports.createPump = async (req, res) => {
+// Create Tank
+exports.createTank = async (req, res) => {
   try {
-    const pump = await Pump.create(req.body);
+    const tank = await Tank.create(req.body);
 
     res.status(201).json({
       success: true,
-      message: "Pump created successfully",
-      data: pump,
+      message: "Tank created successfully",
+      data: tank,
     });
   } catch (error) {
     res.status(500).json({
@@ -18,15 +18,15 @@ exports.createPump = async (req, res) => {
   }
 };
 
-// Get all pumps
-exports.getAllPumps = async (req, res) => {
+// Get All Tanks
+exports.getAllTanks = async (req, res) => {
   try {
-    const pumps = await Pump.find();
+    const tanks = await Tank.find();
 
     res.status(200).json({
       success: true,
-      count: pumps.length,
-      data: pumps,
+      count: tanks.length,
+      data: tanks,
     });
   } catch (error) {
     res.status(500).json({
@@ -36,22 +36,21 @@ exports.getAllPumps = async (req, res) => {
   }
 };
 
-
-// Get pump by ID
-exports.getPumpById = async (req, res) => {
+// Get Tank By ID
+exports.getTankById = async (req, res) => {
   try {
-    const pump = await Pump.findById(req.params.id);
+    const tank = await Tank.findById(req.params.id);
 
-    if (!pump) {
+    if (!tank) {
       return res.status(404).json({
         success: false,
-        message: "Pump not found",
+        message: "Tank not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      data: pump,
+      data: tank,
     });
   } catch (error) {
     res.status(500).json({
@@ -61,10 +60,10 @@ exports.getPumpById = async (req, res) => {
   }
 };
 
-// Update pump
-exports.updatePump = async (req, res) => {
+// Update Tank
+exports.updateTank = async (req, res) => {
   try {
-    const pump = await Pump.findByIdAndUpdate(
+    const tank = await Tank.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
@@ -73,17 +72,17 @@ exports.updatePump = async (req, res) => {
       }
     );
 
-    if (!pump) {
+    if (!tank) {
       return res.status(404).json({
         success: false,
-        message: "Pump not found",
+        message: "Tank not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Pump updated successfully",
-      data: pump,
+      message: "Tank updated successfully",
+      data: tank,
     });
   } catch (error) {
     res.status(500).json({
@@ -93,21 +92,21 @@ exports.updatePump = async (req, res) => {
   }
 };
 
-// Delete a pump
-exports.deletePump = async (req, res) => {
+// Delete Tank
+exports.deleteTank = async (req, res) => {
   try {
-    const pump = await Pump.findByIdAndDelete(req.params.id);
+    const tank = await Tank.findByIdAndDelete(req.params.id);
 
-    if (!pump) {
+    if (!tank) {
       return res.status(404).json({
         success: false,
-        message: "Pump not found",
+        message: "Tank not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Pump deleted successfully",
+      message: "Tank deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
